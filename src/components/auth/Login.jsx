@@ -23,7 +23,7 @@ const Login = () => {
 
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:5002/auth/login', { email, username, password });
+      const response = await axios.post('https://backendms-71ot.onrender.com/auth/login', { email, username, password });
       if (response.data.token) {
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('username', response.data.user.username);

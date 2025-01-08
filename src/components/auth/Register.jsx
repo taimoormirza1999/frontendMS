@@ -28,7 +28,7 @@ const Register = () => {
 
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:5002/auth/register', {
+      const response = await axios.post('https://backendms-71ot.onrender.com/auth/register', {
         username,
         email,
         password,

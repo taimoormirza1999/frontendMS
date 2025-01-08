@@ -39,7 +39,7 @@ const FileUpload = ({ userId, refreshFiles }) => {
       formData.append('file', file);
       formData.append('tags', tags || '');
 
-      const response = await axios.post('http://localhost:5002/auth/upload', formData, {
+      const response = await axios.post('https://backendms-71ot.onrender.com/auth/upload', formData, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
