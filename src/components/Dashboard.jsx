@@ -17,7 +17,7 @@ const Dashboard = () => {
 useEffect(() => {
 const gettingUserId = localStorage.getItem('userId')
 const gettingUsername = localStorage.getItem('username')
-const capitalizedUsername = gettingUsername.charAt(0).toUpperCase() + gettingUsername.slice(1);
+const capitalizedUsername = gettingUsername?.charAt(0).toUpperCase() + gettingUsername?.slice(1);
 setUsername(capitalizedUsername);
 setUserId(gettingUserId);
 toast.success('User Login Successfully!', {

@@ -32,8 +32,8 @@ const Login = () => {
          
         });
         setTimeout(() => {
-          window.location.href = '/'; // Redirect after showing toast
-        }, 1000); // Delay for toast notification
+          window.location.href = '/'; 
+        }, 1000); 
       }
     } catch (err) {
       toast.error('Invalid credentials or server error.', {

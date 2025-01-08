@@ -3,7 +3,7 @@ import { FaUser, FaLock, FaEnvelope } from 'react-icons/fa';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 
-import { useNavigate, Link } from 'react-router-dom'; // Using react-router for navigation
+import { useNavigate, Link } from 'react-router-dom'; 
 import Star from '../Star';
 
 const Register = () => {
@@ -40,12 +40,12 @@ const Register = () => {
             theme: "light",
            });
         setTimeout(() => {
-          navigate('/login'); // Redirect to login after 2 seconds
+          navigate('/login'); 
         }, 2000);
       } else {
         toast.success(response.data.message || 'Something went wrong.');
         setTimeout(() => {
-            navigate('/login'); // Redirect to login after 2 seconds
+            navigate('/login'); 
           }, 2000);
       }
     } catch (error) {
