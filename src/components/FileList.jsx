@@ -3,6 +3,10 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import ReactModalImage from 'react-modal-image';
 import {  toast } from 'react-toastify';
 import { motion } from 'framer-motion';
+import Star from './Star';
+import { AiOutlineEye } from 'react-icons/ai';
+import { MdOutlineVisibility } from 'react-icons/md';
+import { BiShow } from 'react-icons/bi';
 
 const FileList = ({ files, refreshFiles,apiUrl }) => {
   const [filesByTags, setFilesByTags] = useState({});
@@ -27,41 +31,125 @@ useEffect(() => {
   
   setFilesByTags(filesByTags1);
 }, [files]);
-  // setFilesByTags(filesByTags1);
-  // Handle Drag End
-  // const handleDragEnd = (result, tagKey) => {
-  //   if (!result.destination) return;
-
-  //   const items = Array.from(filesByTags[tagKey]);
-  //   const [reorderedItem] = items.splice(result.source.index, 1);
-  //   items.splice(result.destination.index, 0, reorderedItem);
-
-  //   const updatedFilesByTags = { ...filesByTags, [tagKey]: items };
-  //   setFilesByTags(updatedFilesByTags);
+  // const handleDragEnd = (result) => {
+  //   const { source, destination } = result;
+  
+  //   if (!destination) return;
+  
+  //   if (source.droppableId === "tags") {
+  //     const tags = Object.keys(filesByTags);
+  //     const [movedTag] = tags.splice(source.index, 1);
+  //     tags.splice(destination.index, 0, movedTag);
+  
+  //     const reorderedTags = {};
+  //     tags.forEach((tag) => {
+  //       reorderedTags[tag] = filesByTags[tag];
+  //     });
+  
+  //     setFilesByTags(reorderedTags);
+  //   } else {
+  //     const tagKey = source.droppableId; 
+  //     const items = Array.from(filesByTags[tagKey]);
+  //     const [reorderedItem] = items.splice(source.index, 1);
+  //     items.splice(destination.index, 0, reorderedItem);
+  
+  //     setFilesByTags((prevFilesByTags) => ({ ...prevFilesByTags, [tagKey]: items }));
+  //   }
   // };
-  const handleDragEnd = (result) => {
+  
+  // const handleDragEnd = async (result) => {
+   
+
+  //   console.log('Drag End Result:', result); // Check result object
+  //   // const { source, destination } = result;
+  //   // if (!destination) return;
+  //   const { source, destination } = result;
+  //   if (!destination) return;
+    
+  //   if (source.droppableId === "tags" || Object.keys(filesByTags).includes(source.droppableId)) {
+  //     console.warn(`API URL being called:my destination ${destination.droppableId} -- ${apiUrl}auth/update-tags/`);
+  //     const tags = Object.keys(filesByTags);
+  //     const [movedTag] = tags.splice(source.index, 1);
+  //     tags.splice(destination.index, 0, movedTag);
+  
+  //     const reorderedTags = {};
+  //     tags.forEach((tag) => {
+  //       reorderedTags[tag] = filesByTags[tag];
+  //     });
+  
+  //     setFilesByTags(reorderedTags);
+  //     try {
+  //       // Fetch all fileIds under updated tags
+  //       const allFileIds = Object.values(reorderedTags).flat().map(file => file.$id);
+  //       await Promise.all(allFileIds.map(fileId => {
+  //         const updatedTags = Object.keys(reorderedTags).filter(tag => 
+  //           reorderedTags[tag].some(file => file.$id === fileId)
+  //         );
+  //         return fetch(`${apiUrl}auth/update-tags/${fileId}`, {
+  //           method: 'POST',
+  //           headers: { 'Content-Type': 'application/json' },
+  //           body: JSON.stringify({ tags: updatedTags }),
+  //         });
+  //       }));
+  //       toast.success('Tags updated successfully!');
+  //     } catch (error) {
+  //       console.error('Error updating tags:', error);
+  //       toast.error('Failed to update tags');
+  //     }
+  //   }
+  // };
+  const handleDragEnd = async (result) => {
     const { source, destination } = result;
-  
-    if (!destination) return;
-  
+    
+    if (!destination) return; // Return if dropped outside
+    
     if (source.droppableId === "tags") {
       const tags = Object.keys(filesByTags);
       const [movedTag] = tags.splice(source.index, 1);
       tags.splice(destination.index, 0, movedTag);
-  
+      
       const reorderedTags = {};
-      tags.forEach((tag) => {
+      tags.forEach(tag => {
         reorderedTags[tag] = filesByTags[tag];
       });
   
       setFilesByTags(reorderedTags);
     } else {
-      const tagKey = source.droppableId; 
-      const items = Array.from(filesByTags[tagKey]);
-      const [reorderedItem] = items.splice(source.index, 1);
-      items.splice(destination.index, 0, reorderedItem);
+      const sourceTag = source.droppableId;
+      const destinationTag = destination.droppableId;
+      
+      if (sourceTag === destinationTag) {
+        const items = Array.from(filesByTags[sourceTag]);
+        const [movedFile] = items.splice(source.index, 1);
+        items.splice(destination.index, 0, movedFile);
+        
+        setFilesByTags(prev => ({ ...prev, [sourceTag]: items }));
+      } else {
+        const sourceFiles = Array.from(filesByTags[sourceTag]);
+        const [movedFile] = sourceFiles.splice(source.index, 1);
+        const destinationFiles = Array.from(filesByTags[destinationTag] || []);
+        destinationFiles.splice(destination.index, 0, movedFile);
   
-      setFilesByTags((prevFilesByTags) => ({ ...prevFilesByTags, [tagKey]: items }));
+        setFilesByTags(prev => ({
+          ...prev,
+          [sourceTag]: sourceFiles,
+          [destinationTag]: destinationFiles,
+        }));
+  
+        try {
+          const updatedTags = [sourceTag, destinationTag].filter(tag => !!tag);
+          await fetch(`${apiUrl}auth/update-tags/${movedFile.$id}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ tags: updatedTags }),
+          });
+          refreshFiles();
+          toast.success('Tag updated successfully!');
+        } catch (error) {
+          console.error('Error updating tags:', error);
+          toast.error('Failed to update tag');
+        }
+      }
     }
   };
   
@@ -146,13 +234,14 @@ const handleModalOpen = (file) => {
                       ref={provided.innerRef}
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
-                      className="px-3 py-2  md:w-2/5  bg-white   rounded-lg shadow hover:shadow-xl transition duration-300 ease-in-out"
+                      className="px-3 py-2 shadow-purple-400 md:w-2/5  bg-white   rounded-lg shadow-xl hover:shadow-xl transition duration-300 ease-in-out"
                     >
                       <div className="flex items-center justify-between flex-wrap">
-                        <h3 className="text-lg font-semibold">{tag}</h3>
+                        <h3 className="text-lg font-semibold font-serif"> <Star/>  {tag}</h3>
                       </div>
 
-                      <Droppable droppableId={tag}>
+                      <Droppable droppableId={`${tag}`} key={tag}>
+
                         {(provided) => (
                           <div
                             className="mt-4 space-y-4  "
@@ -162,7 +251,7 @@ const handleModalOpen = (file) => {
                             {filesByTags[tag].slice().reverse().map((file, fileIndex) => (
                               <Draggable key={file.$id} draggableId={file.$id} index={fileIndex}>
                                 {(provided) => (
-                                  <motion.div variants={containerVariants}
+                                  <div variants={containerVariants}
                                   initial="hidden"
                                   animate="visible"
                                   onClick={() => { incrementViewCount(file.$id)
@@ -170,10 +259,10 @@ const handleModalOpen = (file) => {
                                     ref={provided.innerRef}
                                     {...provided.draggableProps}
                                     {...provided.dragHandleProps}
-                                    className="md:p-4 bg-gray-100 rounded-lg  hover:shadow-md transition duration-200 ease-in-out shadow-2xl border border-pink-200"
+                                    className="md:p-4 bg-gray-100 rounded-lg  hover:shadow-md transition duration-200 ease-in-out shadow-lg border shadow-indigo-300"
                                   >
                                     {renderFilePreview(file)}
-                                    <div className="mt-2 text-sm text-gray-600 relative">
+                                    <div className="mt-3 text-sm text-gray-600 relative">
                                       <a
                                         href={file.fileUrl}
                                         target="_blank"
@@ -182,7 +271,7 @@ const handleModalOpen = (file) => {
                                       >
                                         {file.file || 'Unnamed File'}
                                       </a>
-                                    <span className='text-red-500 text-right text-end'> Count: {file.views}</span>
+                                    <span className='text-red-500 text-right text-end flex justify-end absolute right-1 font-serif'> <BiShow className=" text-2xl text-red-500 inline-block" /> {file.views}</span>
                                     </div>
                              <button
     onClick={() => {
@@ -190,11 +279,11 @@ const handleModalOpen = (file) => {
       toast.success('URL copied to clipboard!');
       incrementViewCount(file.$id);
     }}
-    className=" text-xs top-2 right-2 bg-indigo-500 text-white px-1 py-1 rounded-full shadow-md hover:bg-indigo-600 focus:outline-none"
+    className=" text-xs top-2 right-2 bg-indigo-500 text-white px-1 py-1 rounded-full shadow-md hover:bg-indigo-600 focus:outline-none  shadow-lg shadow-indigo-300"
   >
     Copy URL
   </button>
-                                  </motion.div>
+                                  </div>
                                 )}
                               </Draggable>
                             ))}

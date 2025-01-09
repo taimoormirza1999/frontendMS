@@ -11,7 +11,7 @@ function DashboardHeader({username,dropdownOpen, setDropdownOpen, handleLogout }
           <div className="relative flex items-end md:items-center flex-col-reverse md:flex-row">
             <h3 className='text-sm md:text-base font-serif mx-3 font-semibold  text-indigo-600 '>@{username} </h3>
         
-             <FaUserCircle className=" text-indigo-500 text-5xl cursor-pointer shadow-xl shadow-indigo-500 rounded-full mb-2"   onClick={() => setDropdownOpen(!dropdownOpen)} />
+             <FaUserCircle className=" text-indigo-500 text-5xl cursor-pointer shadow-md md:shadow-xl shadow-indigo-500 rounded-full mb-2"   onClick={() => setDropdownOpen(!dropdownOpen)} />
             {dropdownOpen && (
               <div className="relative shadow-2xl">
                 <div className="absolute top-3 right-0 mt-6 w-52 bg-white rounded-md shadow-2xl shadow-indigo-400 px-1">
