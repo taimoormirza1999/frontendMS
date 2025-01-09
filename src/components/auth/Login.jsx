@@ -5,13 +5,18 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Link } from 'react-router-dom';
 import Star from '../Star';
-
+import { motion } from 'framer-motion';
 const Login = () => {
+  const containerVariants = {
+    hidden: { opacity: 0, scale: 0.8 },
+    visible: { opacity: 1, scale: 1, transition: { duration: 0.8 } },
+  };
+
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-
+const apiUrl = import.meta.env.VITE_API_ENDPOINT;
   const handleLogin = async (e) => {
     e.preventDefault();
     if (!email || !username || !password) {
@@ -23,7 +28,7 @@ const Login = () => {
 
     setLoading(true);
     try {
-      const response = await axios.post('https://backendms-71ot.onrender.com/auth/login', { email, username, password });
+      const response = await axios.post(`${apiUrl}auth/login`, { email, username, password });
       if (response.data.token) {
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('username', response.data.user.username);
@@ -46,7 +51,7 @@ const Login = () => {
 
   return (
     <div
-      className="flex items-center justify-center h-screen  bg-gradient-to-r from-blue-500 to-purple-600 "
+      className="flex items-center justify-center h-screen bg-gradient-to-br from-blue-500 via-purple-500 to-indigo-700 "
       // style={{
       //   backgroundSize: 'cover',
       //   backgroundAttachment: 'fixed',
@@ -55,16 +60,12 @@ const Login = () => {
       //     "url('https://static.wixstatic.com/media/14322a_2a19926c1ad54d1690c1fd04f4b10344~mv2.jpg/v1/fill/w_924,h_3000,al_c,q_90,enc_avif,quality_auto/14322a_2a19926c1ad54d1690c1fd04f4b10344~mv2.jpg')",
       // }}
     >
-      <div style={{
-        backgroundSize: 'cover',
-        backgroundAttachment: 'fixed',
-        backgroundPosition: 'center',
-        backgroundImage:
-          "url('https://static.wixstatic.com/media/14322a_2a19926c1ad54d1690c1fd04f4b10344~mv2.jpg/v1/fill/w_924,h_3000,al_c,q_90,enc_avif,quality_auto/14322a_2a19926c1ad54d1690c1fd04f4b10344~mv2.jpg')",
-      }}>
+    
 
      
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md px-10" >
+      <motion.div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md px-10" variants={containerVariants}
+        initial="hidden"
+        animate="visible">
         <h2 className="text-2xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-primaryBlue to-primaryPurple mb-4">
          <Star/> Login  <Star/>
         </h2>
@@ -146,8 +147,8 @@ const Login = () => {
                   </p>
                 </div>
         <ToastContainer />
-      </div>
-      </div>
+      </motion.div>
+     
     </div>
   );
 };

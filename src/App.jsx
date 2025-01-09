@@ -8,6 +8,7 @@ import Register from './components/auth/Register';
 import 'react-toastify/dist/ReactToastify.css';
 import Dashboard from './components/Dashboard';
 import AuthRoute from './components/auth/AuthRoute'; // Import AuthRoute
+import WelcomeScreen from './components/Welcome';
 
 const App = () => {
   return (
@@ -25,6 +26,7 @@ const App = () => {
           
           {/* Default Route */}
           <Route path="/" element={<Dashboard />} />
+          <Route path="/welcome" element={<WelcomeScreen />} />
         </Routes>
       </div>
     </Router>

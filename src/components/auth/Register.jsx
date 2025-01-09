@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { FaUser, FaLock, FaEnvelope } from 'react-icons/fa';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
-
+import { motion } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom'; 
 import Star from '../Star';
 
@@ -12,7 +12,7 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
+  const apiUrl = import.meta.env.VITE_API_ENDPOINT;
   const handleRegister = async (e) => {
     e.preventDefault();
     if (!username || !email || !password) {
@@ -28,7 +28,7 @@ const Register = () => {
 
     setLoading(true);
     try {
-      const response = await axios.post('https://backendms-71ot.onrender.com/auth/register', {
+      const response = await axios.post(`${apiUrl}auth/register`, {
         username,
         email,
         password,
@@ -59,10 +59,14 @@ const Register = () => {
       setLoading(false);
     }
   };
-
+  const containerVariants = {
+    hidden: { opacity: 0, scale: 0.8 },
+    visible: { opacity: 1, scale: 1, transition: { duration: 0.8 } },
+  };
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-purple-600">
-      <div className="bg-white p-8 rounded-lg shadow-xl max-w-md w-full mx-3">
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-500 via-purple-500 to-indigo-700">
+      <motion.div  className="bg-white p-8 rounded-lg shadow-xl max-w-md w-full mx-3" variants={containerVariants}  initial="hidden"
+        animate="visible">
         <h2 className="text-3xl font-bold text-center text-transparent bg-clip-text text-transparent bg-gradient-to-r from-primaryBlue to-primaryPurple mb-6">
         <Star/> Create an Account <Star/>
         </h2>
@@ -121,7 +125,7 @@ const Register = () => {
           </p>
         </div>
         <ToastContainer />
-      </div>
+      </motion.div>
     </div>
   );
 };

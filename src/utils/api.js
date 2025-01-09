@@ -1,7 +1,8 @@
 import axios from 'axios';
-export const fetchFiles = async () => {
+
+export const fetchFiles = async (apiEndPoint) => {
   try {
-    const response = await axios.get('https://backendms-71ot.onrender.com/auth/files');
+    const response = await axios.get(`${apiEndPoint}auth/files`);
     if (response.data && response.data.files) {
       return response.data.files;
     } else {
