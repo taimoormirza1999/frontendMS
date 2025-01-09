@@ -68,7 +68,7 @@ const FileUpload = ({ userId, refreshFiles, apiUrl,getFiles }) => {
   return (
     <form className="p-6 bg-gradient-to-r from-blue-50 to-purple-100 rounded-lg shadow-md space-y-4">
       <div {...getRootProps()} className={`border-dashed shadow shadow-indigo-400 border-2 p-6 rounded-lg cursor-pointer  ${
-          isDragActive ? 'border-blue-500' : 'border-gray-300'
+          isDragActive ? 'border-blue-500' : 'border-gray-300 bg-slate-50/70'
         } flex justify-center items-center space-x-3`}>
           {file ? (
         <div className="mt-0 flex justify-center ">
@@ -93,7 +93,7 @@ const FileUpload = ({ userId, refreshFiles, apiUrl,getFiles }) => {
       (
        <>
         <input {...getInputProps()} />
-        <FaFileUpload className="text-4xl text-blue-500 rounded-md" />
+        <FaFileUpload className="text-4xl text-blue-500 rounded-md " />
         <span className="text-lg font-medium text-gray-600">
           {isDragActive ? 'Drop files here...' : 'Drag and drop files or click to select'}
         </span>

@@ -66,7 +66,7 @@ const containerVariants2 = {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-500 via-purple-500 to-indigo-700 -mt-1 ">
+    <div className="min-h-screen bg-gradient-to-br from-blue-500 via-purple-500 to-indigo-700 -mt-0.5 pt-3">
 <DashboardHeader  
 username={username}
 dropdownOpen={dropdownOpen} 
